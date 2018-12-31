@@ -7,7 +7,7 @@ import random
 
 class Automation:
     # initializes an instance of automation.  requires username and password.  All else taken care of by settings
-    def __init__(self, username=None, password=None, browser=None, url=None, iterations=250, comments=[]):
+    def __init__(self, username=None, password=None, browser=None, url=None, timesleep=30, iterations=250, comments=[]):
         self.username = username
         self.password = password
         self.browser = browser
@@ -16,7 +16,12 @@ class Automation:
         self.comments = comments
         #helpers for customization
         self.i = 0 #found in navigation
+        self.j = iterations
+
+        self.timesleep = timesleep #Defaults at 30
+
         self.image_reload_helper = 9
+
 
     # launches the browser, connects to login page, waits, sends keys to login
     def login(self):
@@ -36,9 +41,11 @@ class Automation:
     # Finds like element, waits for full page load, clicks like, goes to next picture, returns control to caller
     def likePost(self):
         likes = self.browser.find_elements_by_class_name("dCJp8")
-        sleep(10)
+        print(len(likes))
+        sleep(self.timesleep)
         likes[0].click()
         sleep(.4)
+        print("I've completed liking the post task")
 
         return
 
@@ -54,7 +61,7 @@ class Automation:
         return
 
     def navigation(self):
-        #navigate to the proper hashtag url after logging in.  Move to 10th image open, check counter, calls appropriate
+        #navigate to the proper hashtag url after logging in.  Move to 10th image open and return control
 
         self.browser.get(self.getUrl())
 
@@ -62,18 +69,7 @@ class Automation:
         images[self.image_reload_helper].click() #starts at 9 will change if page needs reload due to failure
         sleep(2)
         self.i = 0
-        j = self.getIterations()#Number of posts to scroll through.  250 is Default.  Can be changed with setIterations(iterations)
-        while self.i < j:
 
-            try:
-                self.likePost()
-                if self.i % 20 == 0:
-                    self.commentPost()
-                next = self.browser.find_element_by_class_name("coreSpriteRightPaginationArrow")
-                next.click()
-                self.i += 1
-            except:
-                self.reloadBrowser()
 
 
     def closeBrowser(self):
@@ -81,7 +77,7 @@ class Automation:
 
     def reloadBrowser(self):
         self.browser.refresh()
-        self.image_reload_helper = self.i
+        self.image_reload_helper = self.i + 1
         if self.image_reload_helper < 9:
             self.image_reload_helper = 9
         self.navigation()
@@ -121,7 +117,8 @@ class Automation:
         return 0
 
     def getIterations(self):
-        return self.iterations
+
+        return self.j
 
     def setComments(self):
         self.comments = []
@@ -135,6 +132,13 @@ class Automation:
         number = random.randint(0, len(self.comments) - 1)
         return self.comments[number]
 
+    def setBoolComment(self, bool):
+        self.boolComment = bool
+
+    def getBoolComment(self):
+        return self.boolComment
+
+
     def tooString(self):
-        return "this is a working instance"
+        return "this is a working instance of " + self.getUsername()
 
