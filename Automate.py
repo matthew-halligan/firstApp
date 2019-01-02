@@ -17,7 +17,7 @@ class Automation:
         #helpers for customization
         self.i = 0 #found in navigation
         self.j = iterations
-
+        print(type(iterations), type(timesleep))
         self.timesleep = timesleep #Defaults at 30
 
         self.image_reload_helper = 9

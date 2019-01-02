@@ -66,7 +66,7 @@ class AutomateGUI(QObject):
 
     def processLaunch(self):
         # Initialize worker thread
-        self.WorkerThread = WorkerThread(username=self.entry_user.get(), password=self.entry_password.get(), hashtag=self.entry_hashtag.get(), timesleep=self.entry_timesleep.get(), iterations=self.entry_iterations.get())
+        self.WorkerThread = WorkerThread(username=self.entry_user.get(), password=self.entry_password.get(), hashtag=self.entry_hashtag.get(), timesleep=int(str(self.entry_timesleep.get())), iterations=int(str(self.entry_iterations.get())))
         self.WorkerThread.start()
 
 
@@ -109,7 +109,7 @@ class WorkerThread(Thread):
                 likePostInstance(instance)
 
         # this is where the action starts
-        
+
         loginInstace(self.instance)
         navigateInstance(self.instance)
         while self.i < self.instance.getIterations():
@@ -120,11 +120,11 @@ class WorkerThread(Thread):
             instance_next.click()
             self.i += 1
             print("I am on number", format(self.i, "d"), ". That's", format(self.i / self.instance.getIterations() * 100, "0.2f"), "% complete.")
+        self.instance.closeBrowser()
 
 
 
-
-root = Tk(className=" Automate Instagram")
+root = Tk(className=" Automate Instagram v0_1")
 
 automate = AutomateGUI(root)
 
